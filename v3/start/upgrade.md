@@ -10,17 +10,17 @@ title: Руководство по обновлению
 ## Класс \ Slim \ Slim переименован \ Slim \ App
 Slim 3 использует `\Slim\App` для [Application](/docs/objects/application.html) объект обычно называется `$app`.
 
-``` php
-$app = new \Slim\App();                       
-``` 
+```php
+$app = new \Slim\App();
+```
 
 ## Подпись новой функции маршрута
 
-``` php
- $app->get('/', function (Request $req, Response $res, $args = []) {
-        return $res->withStatus(400)->write('Bad Request');
-    });
-``` 
+```php
+$app->get('/', function (Request $req,  Response $res, $args = []) {
+    return $res->withStatus(400)->write('Bad Request');
+});
+```
 
 
 ## Объекты запроса и ответа больше не доступны через объект приложения
@@ -29,13 +29,14 @@ $app = new \Slim\App();
 являются объектами экземпляра `/Slim/App` ([Application](/docs/objects/application.html) object).
 
 ## Получение переменных _GET и _POST
-<figure class="highlight"><pre>
-<code class="language-php" data-lang="php">$app-&gt;get('/', function (Request $req,  Response $res, $args = []) {
-    $myvar1 = $req-&gt;getParam('myvar'); //checks both _GET and _POST [NOT PSR-7 Compliant]
-    $myvar2 = $req-&gt;getParsedBody()['myvar']; //checks _POST  [IS PSR-7 compliant]
-    $myvar3 = $req-&gt;getQueryParams()['myvar']; //checks _GET [IS PSR-7 compliant]
-});</code></pre>
-</figure>
+
+```php
+$app->get('/', function (Request $req,  Response $res, $args = []) {
+    $myvar1 = $req->getParam('myvar'); //checks both _GET and _POST [NOT PSR-7 Compliant]
+    $myvar2 = $req->getParsedBody()['myvar']; //checks _POST  [IS PSR-7 compliant]
+    $myvar3 = $req->getQueryParams()['myvar']; //checks _GET [IS PSR-7 compliant]
+});
+```
 
 ## Хуки
 Хуки больше не являются частью Slim по сравнению с v3. Вы должны рассмотреть реализовав какие - либо функциональные 
@@ -73,30 +74,39 @@ PrettyExceptions вызывают множество проблем для мн�
 
 Пример:
 
-``` php
+```php
 $app->get('/', function ($req, $res, $args) {
   return $res->withStatus(302)->withHeader('Location', 'your-new-uri');
 });
 ``` 
 
-## Запись `Middleware` промежуточного ПО 
-Запись middleware изменилась с класса на функцию.
+Также, если вы хотите перенаправить маршрут без какой-либо другой обработки, вы можете использовать вспомогательную функцию `$app->redirect()`:
+
+```php
+$app->redirect('/', 'your-new-uri');
+```
+
+## Сигнатура `Middleware` промежуточного ПО 
+Сигнатура middleware изменилась с класса на функцию.
 
 Новая подпись:
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">use Psr\Http\Message\RequestInterface as Request;
+```php
+use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-$app-&gt;add(function (Request $req,  Response $res, callable $next) {
+$app->add(function (Request $req,  Response $res, callable $next) {
     // Do stuff before passing along
     $newResponse = $next($req, $res);
     // Do stuff after route is rendered
     return $newResponse; // continue
-});</code></pre></figure>
+});
+```
 
 Вы все равно можете использовать класс:
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">namespace My;
+```php
+namespace My;
 
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -111,11 +121,11 @@ class Middleware
     }
 }
 
-
 // Register
-$app-&gt;add(new My\Middleware());
+$app->add(new My\Middleware());
 // or
-$app-&gt;add(My\Middleware::class);</code></pre></figure>
+$app->add(My\Middleware::class);
+```
 
 
 ## Выполнение Middleware
@@ -138,23 +148,28 @@ Slim теперь использует [FastRoute](https://github.com/nikic/Fast
 Это означает, что спецификация шаблонов маршрутов изменилась с именованными параметрами теперь в фигурных скобках и 
 квадратных скобках, используемых для необязательных сегментов:
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">// named parameter:
-$app-&gt;get('/hello/{name}', /*...*/);
+```php
+// named parameter:
+$app->get('/hello/{name}', /*...*/);
 
 // optional segment:
-$app-&gt;get('/news[/{year}]', /*...*/);</code></pre></figure>
+$app->get('/news[/{year}]', /*...*/);
+
+```
 
 ## Маршрутное промежуточное ПО `Route Middleware`
 Синтаксис добавления промежуточного ПО маршрута несколько изменился. В версии 3.0:
 
-<figure class="highlight"><pre>
-<code class="language-php" data-lang="php">
-$app-&gt;get(…)-&gt;add($mw2)-&gt;add($mw1);</code></pre></figure>
+```php
+$app->get(…)->add($mw2)->add($mw1);
+```
 
 ## Получение текущего маршрута
 Маршрут является атрибутом объекта Request в v3.0:
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">$request-&gt;getAttribute('route');</code></pre></figure>
+```php
+$request->getAttribute('route');
+```
 
 При получении текущего route в middleware, значение параметра
 `determineRouteBeforeAppMiddleware` должно быть установлено `true` в конфигурации приложения, в противном случае
@@ -164,18 +179,21 @@ $app-&gt;get(…)-&gt;add($mw2)-&gt;add($mw1);</code></pre></figure>
 
 `urlFor()` был переименован `pathFor()` и может быть найден в `router` объекте:
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">$app-&gt;get('/', function ($request, $response, $args) {
-    $url = $this-&gt;router-&gt;pathFor('home');
-    $response-&gt;write("<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'$url'</span><span class="nt">&gt;</span>Home<span class="nt">&lt;/a&gt;</span>");
+```php
+$app->get('/', function ($request, $response, $args) {
+    $url = $this->router->pathFor('home');
+    $response->write("<a href='$url'>Home</a>");
     return $response;
-})-&gt;setName('home');</code></pre></figure>
+})->setName('home');
+```
 
 Также, `pathFor()` известен базовый путь.
 
 ## Контейнер и DI ... Построение
 Slim использует Pimple в качестве контейнера для инъекций зависимостей.
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">// index.php
+```php
+// index.php
 $app = new Slim\App(
     new \Slim\Container(
         include '../config/container.config.php'
@@ -184,80 +202,88 @@ $app = new Slim\App(
 
 // Slim will grab the Home class from the container defined below and execute its index method.
 // If the class is not defined in the container Slim will still contruct it and pass the container as the first arugment to the constructor!
-$app-&gt;get('/', Home::class . ':index');
+$app->get('/', Home::class . ':index');
 
 
 // In container.config.php
 // We are using the SlimTwig here
 return [
-    'settings' =&gt; [
-        'viewTemplatesDirectory' =&gt; '../templates',
+    'settings' => [
+        'viewTemplatesDirectory' => '../templates',
     ],
-    'twig' =&gt; [
-        'title' =&gt; '',
-        'description' =&gt; '',
-        'author' =&gt; ''
+    'twig' => [
+        'title' => '',
+        'description' => '',
+        'author' => ''
     ],
-    'view' =&gt; function ($c) {
+    'view' => function ($c) {
         $view = new Twig(
             $c['settings']['viewTemplatesDirectory'],
             [
-                'cache' =&gt; false // '../cache'
+                'cache' => false // '../cache'
             ]
         );
 
         // Instantiate and add Slim specific extension
-        $view-&gt;addExtension(
+        $view->addExtension(
             new TwigExtension(
                 $c['router'],
-                $c['request']-&gt;getUri()
+                $c['request']->getUri()
             )
         );
 
-        foreach ($c['twig'] as $name =&gt; $value) {
-            $view-&gt;getEnvironment()-&gt;addGlobal($name, $value);
+        foreach ($c['twig'] as $name => $value) {
+            $view->getEnvironment()->addGlobal($name, $value);
         }
 
         return $view;
     },
-    Home::class =&gt; function ($c) {
+    Home::class => function ($c) {
         return new Home($c['view']);
     }
-];</code></pre></figure>
+];
+```
 
 ## Объекты PSR-7
 
 ### `Request, Response` Запрос, ответ,, Uri & UploadFile неизменяемы.
 Это означает, что при изменении одного из этих объектов старый экземпляр не обновляется.
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">// This is WRONG. The change will not pass through.
-$app-&gt;add(function (Request $request, Response $response, $next) {
-    $request-&gt;withAttribute('abc', 'def');
+```php
+// This is WRONG. The change will not pass through.
+$app->add(function (Request $request, Response $response, $next) {
+    $request->withAttribute('abc', 'def');
     return $next($request, $response);
 });
 
 // This is correct.
-$app-&gt;add(function (Request $request, Response $response, $next) {
-    $request = $request-&gt;withAttribute('abc', 'def');
+$app->add(function (Request $request, Response $response, $next) {
+    $request = $request->withAttribute('abc', 'def');
     return $next($request, $response);
-});</code></pre></figure>
+});
+```
 
 ### Телами сообщений являются потоки
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">// ...
+```php
+// ...
 $image = __DIR__ . '/huge_photo.jpg';
 $body = new Stream($image);
 $response = (new Response())
-     -&gt;withStatus(200, 'OK')
-     -&gt;withHeader('Content-Type', 'image/jpeg')
-     -&gt;withHeader('Content-Length', filesize($image))
-     -&gt;withBody($body);
-// ...</code></pre></figure>
+     ->withStatus(200, 'OK')
+     ->withHeader('Content-Type', 'image/jpeg')
+     ->withHeader('Content-Length', filesize($image))
+     ->withBody($body);
+// ...
+```
 
 Для текста:
-<figure class="highlight"><pre><code class="language-php" data-lang="php">// ...
-$response = (new Response())-&gt;getBody()-&gt;write('Hello world!')
+
+```php
+// ...
+$response = (new Response())->getBody()->write('Hello world!')
 
 // Or Slim specific: Not PSR-7 compliant.
-$response = (new Response())-&gt;write('Hello world!');
-// ...</code></pre></figure>
+$response = (new Response())->write('Hello world!');
+// ...
+```

@@ -11,8 +11,9 @@ title: Веб-серверы
 Запустите следующую команду в терминале, чтобы запустить веб-сервер localhost, предполагая, что 
  `./public/` это общедоступный каталог с `index.php` файлом:
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash">php -S localhost:8888 -t public public/index.php</code></pre></figure>
-
+```bash
+php -S localhost:8888 -t public public/index.php
+```
 
 Если вы не используете `index.php` свою точку входа, измените ее соответствующим образом.
 
@@ -21,15 +22,19 @@ title: Веб-серверы
 Убедитесь, что ваши файлы `.htaccess` и `index.php` файлы находятся в том же общедоступном каталоге. 
 Файл `.htaccess`  должен содержать следующий код:
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">RewriteEngine On
+```apacheconfig
+RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [QSA,L]</code></pre></figure>
+RewriteRule ^ index.php [QSA,L]
+```
 
 Убедитесь, что ваш виртуальный хост Apache настроен с параметром `AllowOverride` 
 чтобы `.htaccess` можно было использовать правила перезаписи:
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">AllowOverride All</code></pre></figure>
+```apacheconfig
+AllowOverride All
+```
 
 
 ## Конфигурация Nginx
@@ -41,7 +46,8 @@ RewriteRule ^ index.php [QSA,L]</code></pre></figure>
 корневой директории вашего приложения; ваш
 `index.php` файл front-controller Slim должен находиться в этом каталоге.
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">server {
+```text
+server {
     listen 80;
     server_name example.com;
     index index.php;
@@ -62,14 +68,16 @@ RewriteRule ^ index.php [QSA,L]</code></pre></figure>
         fastcgi_index index.php;
         fastcgi_pass 127.0.0.1:9000;
     }
-}</code></pre></figure>
+}
+```
 
 ## Виртуальная машина HipHop
 
 Ваш файл конфигурации виртуальной машины HipHop должен содержать этот код (вместе с другими параметрами, которые могут 
 вам понадобиться). Убедитесь, что вы изменили  `SourceRoot` настройку, чтобы указать на корневой каталог документа Slim app.
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">Server {
+```text
+Server {
     SourceRoot = /path/to/public/directory
 }
 
@@ -88,7 +96,8 @@ VirtualHost {
                 }
         }
     }
-}</code></pre></figure>
+}
+```
 
 
 ## IIS
@@ -97,29 +106,33 @@ VirtualHost {
  Файл `Web.config` должен содержать следующий код:
 
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
-<span class="nt">&lt;configuration&gt;</span>
-    <span class="nt">&lt;system.webServer&gt;</span>
-        <span class="nt">&lt;rewrite&gt;</span>
-            <span class="nt">&lt;rules&gt;</span>
-                <span class="nt">&lt;rule</span> <span class="na">name=</span><span class="s">"slim"</span> <span class="na">patternSyntax=</span><span class="s">"Wildcard"</span><span class="nt">&gt;</span>
-                    <span class="nt">&lt;match</span> <span class="na">url=</span><span class="s">"*"</span> <span class="nt">/&gt;</span>
-                    <span class="nt">&lt;conditions&gt;</span>
-                        <span class="nt">&lt;add</span> <span class="na">input=</span><span class="s">"{REQUEST_FILENAME}"</span> <span class="na">matchType=</span><span class="s">"IsFile"</span> <span class="na">negate=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-                        <span class="nt">&lt;add</span> <span class="na">input=</span><span class="s">"{REQUEST_FILENAME}"</span> <span class="na">matchType=</span><span class="s">"IsDirectory"</span> <span class="na">negate=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
-                    <span class="nt">&lt;/conditions&gt;</span>
-                    <span class="nt">&lt;action</span> <span class="na">type=</span><span class="s">"Rewrite"</span> <span class="na">url=</span><span class="s">"index.php"</span> <span class="nt">/&gt;</span>
-                <span class="nt">&lt;/rule&gt;</span>
-            <span class="nt">&lt;/rules&gt;</span>
-        <span class="nt">&lt;/rewrite&gt;</span>
-    <span class="nt">&lt;/system.webServer&gt;</span>
-<span class="nt">&lt;/configuration&gt;</span></code></pre></figure>
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="slim" patternSyntax="Wildcard">
+                    <match url="*" />
+                    <conditions>
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" negate="true" />
+                        <add input="{REQUEST_FILENAME}" matchType="IsDirectory" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>
+```
 
 ## lighttpd
 
 Ваш файл конфигурации lighttpd должен содержать этот код (вместе с другими параметрами, которые могут вам понадобиться). 
 Этот код требует lighttpd> = 1.4.24
 
-<figure class="highlight"><pre><code class="language-text" data-lang="text">url.rewrite-if-not-file = ("(.*)" =&gt; "/index.php/$0")</code></pre></figure>
+```text
+url.rewrite-if-not-file = ("(.*)" => "/index.php/$0")
+```
 
 Это предполагает, что Slim  `index.php` находится в корневой папке вашего проекта (www root).
