@@ -4,17 +4,9 @@ title: Документация
 
 <div class="alert alert-info">
     <p>
-        Эта документация предназначена для <strong>Slim 3</strong>. Документацию по Slim 2 можно найти на <a href="http://docs.slimframework.com/">docs.slimframework.com</a>.
+        Эта документация предназначена для <strong>Slim 3</strong>. Документацию по Slim 2 можно найти на <a href="http://www.slimframework.com/docs/v2/">slimframework.com</a>.
     </p>
 </div>
-
-<p style="text-align: center;">
-    <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">
-        <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" />
-    </a>
-    <br />
-    Эта работа лицензируется в соответствии с  <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.
-</p>
 
 ## Добро пожаловать
 
@@ -48,38 +40,23 @@ Slim - отличный инструмент для быстрого прото�
 Затем вы определяете маршруты своего приложения. Наконец, вы запускаете приложение Slim. Это так просто. 
 Вот пример приложения:
 
-<figure>
 
-  <figure class="highlight"><pre><code class="language-php" data-lang="php"><span class="cp">&lt;?php</span>
-<span class="c1">// Create and configure Slim app
-</span><span class="nv">$config</span> <span class="o">=</span> <span class="p">[</span><span
-                class="s1">'settings'</span> <span class="o">=&gt;</span> <span class="p">[</span>
-    <span class="s1">'addContentLengthHeader'</span> <span class="o">=&gt;</span> <span class="kc">false</span><span
-                class="p">,</span>
-<span class="p">]];</span>
-<span class="nv">$app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">\Slim\App</span><span
-                class="p">(</span><span class="nv">$config</span><span class="p">);</span>
+```php
+<?php
+// Create and configure Slim app
+$config = ['settings' => [
+    'addContentLengthHeader' => false,
+]];
+$app = new \Slim\App($config);
 
-<span class="c1">// Define app routes
-</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span
-                class="s1">'/hello/{name}'</span><span class="p">,</span> <span class="k">function</span> <span
-                class="p">(</span><span class="nv">$request</span><span class="p">,</span> <span
-                class="nv">$response</span><span
-                class="p">,</span> <span class="nv">$args</span><span class="p">)</span> <span
-                class="p">{</span>
-    <span class="k">return</span> <span class="nv">$response</span><span class="o">-&gt;</span><span
-                class="na">write</span><span class="p">(</span><span class="s2">"Hello "</span> <span
-                class="o">.</span> <span class="nv">$args</span><span class="p">[</span><span
-                class="s1">'name'</span><span class="p">]);</span>
-<span class="p">});</span>
+// Define app routes
+$app->get('/hello/{name}', function ($request, $response, $args) {
+    return $response->write("Hello " . $args['name']);
+});
 
-<span class="c1">// Run app
-</span><span class="nv">$app</span><span class="o">-&gt;</span><span class="na">run</span><span
-                class="p">();</span></code></pre>
-  </figure>
-
-  <figcaption>Пример 1: Пример Slim application</figcaption>
-</figure>
+// Run app
+$app->run();
+```
 
 ## Запрос и ответ
 
