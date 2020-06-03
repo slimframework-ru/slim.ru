@@ -4,7 +4,7 @@ title: Документация
 
 <div class="alert alert-info">
     <p>
-        Эта документация предназначена для <strong>Slim 4</strong>. Ищете <a href="/v3">документацию по Slim 3</a>.
+        Эта документация предназначена для <strong>Slim 4</strong>. Ищете <a href="/v3">документацию по Slim 3</a>?
     </p>
 </div>
 
