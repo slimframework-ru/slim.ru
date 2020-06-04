@@ -13,13 +13,15 @@ title: Развертывание
 Первое, что нужно сделать, это настроить настройки  (`src/settings.php` в приложении скелета) 
 и убедиться, что вы не отображаете полную информацию об ошибке для публики.
 
-<figure class="highlight"><pre><code class="language-php" data-lang="php">  'displayErrorDetails' =&gt; false, // set to false in production</code></pre></figure>
+```php
+  'displayErrorDetails' => false, // set to false in production
+```
 
 Вы также должны убедиться, что ваша установка PHP настроена так, чтобы не отображать ошибки с `php.ini` настройкой:
 
-<figure class="highlight"><pre><code class="language-ini" data-lang="ini">
-<span class="py">display_errors</span> <span class="p">= </span><span class="s"> 0</span></code></pre>
-</figure>
+```ini
+display_errors = 0
+```
 
 
 ## Развертывание на собственный сервер
@@ -40,11 +42,13 @@ title: Развертывание
 Если ваш общий сервер работает Apache, то вам нужно создать`.htaccess` файл в веб - сервера корневой каталог
  (обычно называется `htdocs`, `public`, `public_html` или `www`) со следующим содержанием:
 
-<figure class="highlight"><pre><code class="language-apache" data-lang="apache"><span class="p">&lt;</span><span class="nl">IfModule</span><span class="sr"> mod_rewrite.c</span><span class="p">&gt;
-</span>   <span class="nc">RewriteEngine</span> <span class="ss">on</span>
-   <span class="nc">RewriteRule</span> ^$ public/     [L]
-   <span class="nc">RewriteRule</span> (.*) public/$1 [L]
-<span class="p">&lt;/</span><span class="nl">IfModule</span><span class="p">&gt;</span></code></pre></figure>
+```apacheconfig
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   RewriteRule ^$ public/     [L]
+   RewriteRule (.*) public/$1 [L]
+</IfModule>
+```
 
 (замените `public` на правильное имя)
 

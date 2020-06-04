@@ -38,9 +38,7 @@ Middleware идеально подходит для этих сценариев.
 промежуточного ПО, сериализуется в исходный HTTP-ответ и возвращается клиенту HTTP. Вот диаграмма, иллюстрирующая 
 поток процесса промежуточного программного обеспечения:
 
-<div style="padding: 2em 0; text-align: center">
-    <img src="/md/images/middleware.png" alt="Middleware architecture" style="max-width: 80%;"/>
-</div>
+![Архитектура промежуточного ПО](/assets/images/md/middleware.png)
 
 ## Как написать промежуточное программное обеспечение?
 
