@@ -66,6 +66,8 @@ $errorMiddleware->setDefaultErrorHandler($errorHandler);
 $app->run();
 ```
 
+<div id="advanced-notices-and-warnings-handling"></div>
+
 ## Расширенный пользовательский обработчик ошибок
 
 ```php
